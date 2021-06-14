@@ -7,6 +7,7 @@ const AuthForm = () => {
   const passwordInputRef = useRef();
 
   const [isLogin, setIsLogin] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const switchAuthModeHandler = () => {
     setIsLogin(prevState => !prevState);
@@ -19,35 +20,81 @@ const AuthForm = () => {
     const enteredPassword = passwordInputRef.current.value;
     //TODO: validate
     console.log("submitted");
+    let loginUrl = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.REACT_APP_FIREBASE_AUTH_API_KEY}`;
+    let signupUrl = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.REACT_APP_FIREBASE_AUTH_API_KEY}`;
 
     if (isLogin) {
-    } else {
-      fetch(
-        `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.REACT_APP_FIREBASE_AUTH_API_KEY}`,
-        {
-          method: "POST",
-          body: JSON.stringify({
-            email: enteredEmail,
-            password: enteredPassword,
-            returnSecureToken: true,
-          }),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
+      setIsLoading(false);
+      fetch(loginUrl, {
+        method: "POST",
+        body: JSON.stringify({
+          email: enteredEmail,
+          password: enteredPassword,
+          returnSecureToken: true,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
         .then(res => {
+          setIsLoading(false);
           if (res.ok) {
-            //
+            return res.json();
             console.log(res.status);
           } else {
             return res.json().then(data => {
               //TODO: show an error to the user
-              console.log(data);
+              let errorMessage = "Authentication failed";
+              if (data && data.error && data.error.message) {
+                errorMessage = data.error.message;
+              }
+              // could set Error message in the state
+              throw new Error(errorMessage);
             });
           }
         })
-        .catch();
+        .then(data => {
+          console.log(data);
+        })
+        .catch(err => {
+          alert(err.message);
+        });
+    } else {
+      setIsLoading(true);
+      fetch(signupUrl, {
+        method: "POST",
+        body: JSON.stringify({
+          email: enteredEmail,
+          password: enteredPassword,
+          returnSecureToken: true,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then(res => {
+          setIsLoading(false);
+          if (res.ok) {
+            return res.json();
+            console.log(res.status);
+          } else {
+            return res.json().then(data => {
+              //TODO: show an error to the user
+              let errorMessage = "signup failed";
+              if (data && data.error && data.error.message) {
+                errorMessage = data.error.message;
+              }
+              // could set Error message in the state
+              throw new Error(errorMessage);
+            });
+          }
+        })
+        .then(data => {
+          console.log(data);
+        })
+        .catch(err => {
+          alert(err.message);
+        });
     }
   };
 
@@ -64,7 +111,8 @@ const AuthForm = () => {
           <input ref={passwordInputRef} type="password" id="password" required />
         </div>
         <div className={classes.actions}>
-          <button>{isLogin ? "Login" : "Create Account"}</button>
+          {!isLoading && <button>{isLogin ? "Login" : "Create Account"}</button>}
+          {isLoading && <p>Loading..</p>}
           <button type="button" className={classes.toggle} onClick={switchAuthModeHandler}>
             {isLogin ? "Create new account" : "Login with existing account"}
           </button>
