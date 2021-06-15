@@ -58,7 +58,7 @@ const AuthForm = () => {
         })
         .then(data => {
           authCtx.login(data.idToken);
-          history.replace("/");
+          history.replace("/dashboard");
           // console.log(data);
         })
         .catch(err => {
@@ -94,7 +94,7 @@ const AuthForm = () => {
           }
         })
         .then(data => {
-          history.replace("/");
+          history.replace("/dashboard");
           console.log(data);
         })
         .catch(err => {
