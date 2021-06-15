@@ -1,5 +1,4 @@
 import { useRef, useContext, useState } from "react";
-import { useHistory } from "react-router-dom";
 import AuthContext from "../../store/auth-context";
 import classes from "./ProfileForm.module.css";
 
@@ -8,9 +7,6 @@ const ProfileForm = () => {
   const authCtx = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(false);
   const [emailChanged, setEmailChanged] = useState(false);
-
-  const history = useHistory();
-
   const submitHandler = event => {
     setIsLoading(true);
     event.preventDefault();
@@ -51,7 +47,7 @@ const ProfileForm = () => {
         setEmailChanged(true);
         console.log(data);
         setTimeout(() => {
-          history.replace("/");
+          authCtx.logout();
         }, 4000);
       })
       .catch(err => {
