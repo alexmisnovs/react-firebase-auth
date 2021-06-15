@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import AuthContext from "../../store/auth-context";
@@ -29,7 +29,7 @@ const MainNavigation = () => {
             </li>
           )}
           {isLoggedIn && (
-            <>
+            <React.Fragment>
               <li>
                 <Link to="/profile">Profile</Link>
               </li>
@@ -39,7 +39,7 @@ const MainNavigation = () => {
               <li>
                 <button onClick={logoutHandler}>Logout</button>
               </li>
-            </>
+            </React.Fragment>
           )}
         </ul>
       </nav>

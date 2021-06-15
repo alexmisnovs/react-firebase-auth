@@ -1,5 +1,5 @@
 import { Switch, Route, Redirect } from "react-router-dom";
-import { useContext } from "react";
+import React, { useContext } from "react";
 import Layout from "./components/Layout/Layout";
 import UserProfile from "./components/Profile/UserProfile";
 import AuthPage from "./pages/AuthPage";
@@ -21,14 +21,14 @@ function App() {
           </Route>
         )}
         {authCtx.isLoggedIn && (
-          <>
+          <React.Fragment>
             <Route path="/profile">
               <UserProfile />
             </Route>
             <Route path="/dashboard">
               <DashboardPage />
             </Route>
-          </>
+          </React.Fragment>
         )}
         <Route path="*">
           <Redirect to="/auth" />
