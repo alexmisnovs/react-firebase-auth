@@ -57,9 +57,10 @@ const AuthForm = () => {
           }
         })
         .then(data => {
-          authCtx.login(data.idToken);
+          console.log(data);
+          authCtx.login(data.idToken, data.email);
           history.replace("/dashboard");
-          // console.log(data);
+          //
         })
         .catch(err => {
           alert(err.message);
